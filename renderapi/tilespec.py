@@ -367,7 +367,8 @@ class ImagePyramid(OrderedDict):
 
     def __init__(self, mipMapLevels=[]):
         self.mipMapLevels = mipMapLevels
-        self.update(self.__iter__())
+        for mml in mipMapLevels:
+            self.update(mml)
 
     def __getitem__(self, key):
         assert type(key) == int
