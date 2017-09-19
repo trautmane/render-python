@@ -37,6 +37,7 @@ class Layout:
         effective size of pixels (in units of choice)
 
     """
+
     def __init__(self, sectionId=None, scopeId=None, cameraId=None,
                  imageRow=None, imageCol=None, stageX=None, stageY=None,
                  rotation=None, pixelsize=None,
@@ -177,6 +178,7 @@ class TileSpec:
         (DEPRECATED, use mipMapLevels, but will override)
 
     '''
+
     def __init__(self, tileId=None, z=None, width=None, height=None,
                  imageUrl=None, maskUrl=None,
                  minint=0, maxint=65535, layout=None, tforms=[],
@@ -241,7 +243,7 @@ class TileSpec:
         thedict['maxIntensity'] = self.maxint
         if self.layout is not None:
             thedict['layout'] = self.layout.to_dict()
-        thedict['mipmapLevels'] = self.ip.to_ordered_dict()
+        thedict['mipmapLevels'] = self.ip
         thedict['transforms'] = {}
         thedict['transforms']['type'] = 'list'
         # thedict['transforms']['specList']=[t.to_dict() for t in self.tforms]
@@ -291,9 +293,9 @@ class TileSpec:
         self.maxY = d.get('maxY', None)
         self.minY = d.get('minY', None)
         self.ip = ImagePyramid(mipMapLevels=[
-             MipMapLevel(
-                 int(l), imageUrl=v.get('imageUrl'), maskUrl=v.get('maskUrl'))
-             for l, v in d['mipmapLevels'].items()])
+            MipMapLevel(
+                int(l), imageUrl=v.get('imageUrl'), maskUrl=v.get('maskUrl'))
+            for l, v in d['mipmapLevels'].items()])
 
         tfl = TransformList(json=d['transforms'])
         self.tforms = tfl.tforms
@@ -323,6 +325,7 @@ class MipMapLevel:
         uri corresponding to mask
 
     """
+
     def __init__(self, level, imageUrl=None, maskUrl=None):
         self.level = level
         self.imageUrl = imageUrl
@@ -349,7 +352,7 @@ class MipMapLevel:
         return iter([(self.level, self._formatUrls())])
 
 
-class ImagePyramid:
+class ImagePyramid(OrderedDict):
     '''Image Pyramid class representing a set of MipMapLevels which correspond
     to mipmapped (continuously downsmapled by 2x) representations
     of an image at level 0
@@ -361,11 +364,27 @@ class ImagePyramid:
         list of :class:`MipMapLevel` objects defining image pyramid
 
     '''
+
     def __init__(self, mipMapLevels=[]):
         self.mipMapLevels = mipMapLevels
+        self.update(self.__iter__())
+
+    def __getitem__(self, key):
+        assert type(key) == int
+        super(ImagePyramid, self).__getitem__(key)
+
+    def __setitem__(self, key, value):
+        assert type(key) == int
+        assert isinstance(value, MipMapLevel)
+        super(ImagePyramid, self).__setitem__(key, value)
+
+    def update(self, mml):
+        self.__setitem__(mml.level, mml)
 
     def to_dict(self):
         """return dictionary representation of this object"""
+        logger.warning(
+            "DEPRECATED: this object is an ordered dict now, will disappear in 2.0")
         return dict(self.__iter__())
 
     def to_ordered_dict(self, key=None):
@@ -384,6 +403,8 @@ class ImagePyramid:
             sorted dictionary of :class:`mipMapLevels` in ImagePyramid
 
         """
+        logger.warning(
+            "DEPRECATED: this is just an ordered dict now, will disappear in 2.0")
         return OrderedDict(sorted(
             self.__iter__(), key=((lambda x: x[0]) if key
                                   is None else key)))
@@ -396,18 +417,10 @@ class ImagePyramid:
         mml : :class:`MipMapLevel`
             :class:`MipMapLevel` to append
         """
+        logger.warning(
+            "DEPRECATED: Use OrderedDict method, will disappear in 2.0")
         self.mipMapLevels.append(mmL)
-
-    def update(self, mmL):
-        """updates the ImagePyramid with this MipMapLevel.
-        will overwrite existing mipMapLevels with same level
-
-        Args:
-            mml (MipMapLevel): mipmap level to update in pyramid
-        """
-        self.mipMapLevels = [
-            l for l in self.mipMapLevels if l.level != mmL.level]
-        self.append(mmL)
+        self.update(self.__iter__())
 
     def get(self, to_get):
         """gets a specific mipmap level in dictionary form
@@ -422,16 +435,17 @@ class ImagePyramid:
         dict
             representation of requested MipMapLevel
         """
+        # mmld =
+        #mml = MipMapLevel(mmld['level'],mmld['imageUrl'],mmld['maskUrl'])
+        logger.warning(
+            "DEPRECATED: just get the object directly through ordereddict, will disappear in 2.0")
         return self.to_dict()[to_get]  # TODO should this default
 
     @property
     def levels(self):
         """list of MipMapLevels in this ImagePyramid"""
-        return [int(i.level) for i in self.mipMapLevels]
-
-    def __iter__(self):
-        return iter([
-            l for sl in [list(mmL) for mmL in self.mipMapLevels] for l in sl])
+        return self.keys()
+        # return [int(i.level) for i in self.mipMapLevels]
 
 
 @renderaccess
@@ -638,7 +652,7 @@ def get_tile_specs_from_box(stack, z, x, y, width, height,
     request_url = format_preamble(
         host, port, owner, project, stack) + \
         "/z/%d/box/%d,%d,%d,%d,%3.2f/render-parameters" % (
-                      z, x, y, width, height, scale)
+        z, x, y, width, height, scale)
     logger.debug(request_url)
     r = session.get(request_url)
     try:
