@@ -394,7 +394,6 @@ class ImagePyramid(OrderedDict):
 
     def to_dict(self):
         """return dictionary representation of this object"""
-        print self.items()
         return {str(k): v._formatUrls() for k, v in sorted(self.items()) if v is not None}
 
     def to_ordered_dict(self, key=None):
