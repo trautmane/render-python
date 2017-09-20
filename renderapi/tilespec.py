@@ -243,7 +243,7 @@ class TileSpec:
         thedict['maxIntensity'] = self.maxint
         if self.layout is not None:
             thedict['layout'] = self.layout.to_dict()
-        thedict['mipmapLevels'] = dict(self.ip)
+        thedict['mipmapLevels'] = self.ip.to_dict()
         thedict['transforms'] = {}
         thedict['transforms']['type'] = 'list'
         # thedict['transforms']['specList']=[t.to_dict() for t in self.tforms]
@@ -386,9 +386,7 @@ class ImagePyramid(OrderedDict):
 
     def to_dict(self):
         """return dictionary representation of this object"""
-        logger.warning(
-            "DEPRECATED: this object is an ordered dict now, will disappear in 2.0")
-        return dict(self.__iter__())
+        return {k,v.to_dict() for k,v in self.items()}
 
     def to_ordered_dict(self, key=None):
         """returns :class:`OrderedDict` represention of this object,
