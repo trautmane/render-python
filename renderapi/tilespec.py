@@ -386,7 +386,7 @@ class ImagePyramid(OrderedDict):
 
     def to_dict(self):
         """return dictionary representation of this object"""
-        return {k: v.to_dict() for k, v in self.items() if v is not None}
+        return {str(k): v.to_dict() for k, v in self.items() if v is not None}
 
     def to_ordered_dict(self, key=None):
         """returns :class:`OrderedDict` represention of this object,
