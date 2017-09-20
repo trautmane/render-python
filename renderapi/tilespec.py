@@ -373,11 +373,11 @@ class ImagePyramid(OrderedDict):
         
 
     def __getitem__(self, key):
-        assert type(key) == int
+        key=int(key)
         super(ImagePyramid, self).__getitem__(key)
 
     def __setitem__(self, key, value):
-        assert type(key) == int
+        key = int(key)
         assert isinstance(value, MipMapLevel)
         super(ImagePyramid, self).__setitem__(key, value)
 
