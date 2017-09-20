@@ -327,7 +327,7 @@ class MipMapLevel:
     """
 
     def __init__(self, level, imageUrl=None, maskUrl=None):
-        self.level = level
+        self.level = int(level)
         self.imageUrl = imageUrl
         self.maskUrl = maskUrl
 
@@ -352,6 +352,19 @@ class MipMapLevel:
         return iter([(self.level, self._formatUrls())])
 
 
+class NewImagePyramid(OrderedDict):
+    def __init__(self, mipMapLevels=[],*args,**kwargs):
+        super(NewImagePyramid,self).__init__(*args,**kwargs)
+
+    def __setitem__(self, key, value,**kwargs):
+        key = int(key)
+        super(NewImagePyramid, self).__setitem__(key, value,**kwargs)
+    
+    def __getitem__( key):
+        super(NewImagePyramid, self).__getitem__(key)
+
+  
+
 class ImagePyramid(OrderedDict):
     '''Image Pyramid class representing a set of MipMapLevels which correspond
     to mipmapped (continuously downsmapled by 2x) representations
@@ -370,23 +383,19 @@ class ImagePyramid(OrderedDict):
         self.mipMapLevels = mipMapLevels
         for mml in mipMapLevels:
             self.update(mml)
-        
 
-    def __getitem__(self, key):
-        key=int(key)
-        super(ImagePyramid, self).__getitem__(key)
-
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value,**kwargs):
         key = int(key)
         assert isinstance(value, MipMapLevel)
-        super(ImagePyramid, self).__setitem__(key, value)
+        super(ImagePyramid, self).__setitem__(key, value,**kwargs)
 
     def update(self, mml):
-        self.__setitem__(mml.level, mml)
+        self.__setitem__(int(mml.level), mml)
 
     def to_dict(self):
         """return dictionary representation of this object"""
-        return {str(k): v.to_dict() for k, v in self.items() if v is not None}
+        print self.items()
+        return {str(k): v._formatUrls() for k, v in sorted(self.items()) if v is not None}
 
     def to_ordered_dict(self, key=None):
         """returns :class:`OrderedDict` represention of this object,
@@ -423,24 +432,24 @@ class ImagePyramid(OrderedDict):
         self.mipMapLevels.append(mmL)
         self.update(self.__iter__())
 
-    def get(self, to_get):
-        """gets a specific mipmap level in dictionary form
+    # def get(self, to_get):
+    #     """gets a specific mipmap level in dictionary form
 
-        Parameters
-        ----------
-        to_get : int
-            level to get
+    #     Parameters
+    #     ----------
+    #     to_get : int
+    #         level to get
 
-        Returns
-        -------
-        dict
-            representation of requested MipMapLevel
-        """
-        # mmld =
-        #mml = MipMapLevel(mmld['level'],mmld['imageUrl'],mmld['maskUrl'])
-        logger.warning(
-            "DEPRECATED: just get the object directly through ordereddict, will disappear in 2.0")
-        return self.to_dict()[to_get]  # TODO should this default
+    #     Returns
+    #     -------
+    #     dict
+    #         representation of requested MipMapLevel
+    #     """
+    #     # mmld =
+    #     #mml = MipMapLevel(mmld['level'],mmld['imageUrl'],mmld['maskUrl'])
+    #     logger.warning(
+    #         "DEPRECATED: just get the object directly through ordereddict, will disappear in 2.0")
+    #     return self.to_dict()[to_get]  # TODO should this default
 
     @property
     def levels(self):
