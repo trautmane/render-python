@@ -44,6 +44,7 @@ def test_load_tilespecs_args():
         tforms=renderapi.transform.TransformList(
             json=ts['transforms']).tforms)
                  for ts in ts_json_expected]
+    print tilespecs[0].to_dict()
     assert(all(map(
         lambda x: eq(*x),
         zip([ts.to_dict() for ts in tilespecs], ts_json_expected))))
