@@ -352,24 +352,11 @@ class MipMapLevel:
         return iter([(self.level, self._formatUrls())])
 
 
-class NewImagePyramid(OrderedDict):
-    def __init__(self, mipMapLevels=[],*args,**kwargs):
-        super(NewImagePyramid,self).__init__(*args,**kwargs)
-
-    def __setitem__(self, key, value,**kwargs):
-        key = int(key)
-        super(NewImagePyramid, self).__setitem__(key, value,**kwargs)
-    
-    def __getitem__( key):
-        super(NewImagePyramid, self).__getitem__(key)
-
-  
-
 class ImagePyramid(OrderedDict):
-    '''Image Pyramid class representing a set of MipMapLevels which correspond
-    to mipmapped (continuously downsmapled by 2x) representations
-    of an image at level 0
-    Can be put into dictionary formatting using dict(ip) or OrderedDict(ip)
+    '''Image Pyramid class derived from OrderedDict representing a set 
+    of MipMapLevels which correspond to mipmapped (continuously downsmapled by 2x)
+    representations of an image at level 0
+    Can be put into dictionary formatting using to_dict method
 
     Attributes
     ----------
@@ -378,16 +365,16 @@ class ImagePyramid(OrderedDict):
 
     '''
 
-    def __init__(self, mipMapLevels=[],*args,**kwargs):
-        super(ImagePyramid,self).__init__(*args,**kwargs)
+    def __init__(self, mipMapLevels=[], *args, **kwargs):
+        super(ImagePyramid, self).__init__(*args, **kwargs)
         self.mipMapLevels = mipMapLevels
         for mml in mipMapLevels:
             self.update(mml)
 
-    def __setitem__(self, key, value,**kwargs):
+    def __setitem__(self, key, value, **kwargs):
         key = int(key)
         assert isinstance(value, MipMapLevel)
-        super(ImagePyramid, self).__setitem__(key, value,**kwargs)
+        super(ImagePyramid, self).__setitem__(key, value, **kwargs)
 
     def update(self, mml):
         self.__setitem__(int(mml.level), mml)
