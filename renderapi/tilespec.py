@@ -432,24 +432,24 @@ class ImagePyramid(OrderedDict):
         self.mipMapLevels.append(mmL)
         self.update(self.__iter__())
 
-    # def get(self, to_get):
-    #     """gets a specific mipmap level in dictionary form
+    def get(self, to_get):
+        """gets a specific mipmap level in dictionary form
 
-    #     Parameters
-    #     ----------
-    #     to_get : int
-    #         level to get
+        Parameters
+        ----------
+        to_get : int
+            level to get
 
-    #     Returns
-    #     -------
-    #     dict
-    #         representation of requested MipMapLevel
-    #     """
-    #     # mmld =
-    #     #mml = MipMapLevel(mmld['level'],mmld['imageUrl'],mmld['maskUrl'])
-    #     logger.warning(
-    #         "DEPRECATED: just get the object directly through ordereddict, will disappear in 2.0")
-    #     return self.to_dict()[to_get]  # TODO should this default
+        Returns
+        -------
+        dict
+            representation of requested MipMapLevel
+        """
+        # mmld =
+        #mml = MipMapLevel(mmld['level'],mmld['imageUrl'],mmld['maskUrl'])
+        logger.warning(
+            "DEPRECATED: just get the object directly through ordereddict, will disappear in 2.0")
+        return self.to_dict()[to_get]  # TODO should this default
 
     @property
     def levels(self):
