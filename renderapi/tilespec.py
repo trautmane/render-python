@@ -243,7 +243,7 @@ class TileSpec:
         thedict['maxIntensity'] = self.maxint
         if self.layout is not None:
             thedict['layout'] = self.layout.to_dict()
-        thedict['mipmapLevels'] = self.ip
+        thedict['mipmapLevels'] = dict(self.ip)
         thedict['transforms'] = {}
         thedict['transforms']['type'] = 'list'
         # thedict['transforms']['specList']=[t.to_dict() for t in self.tforms]
@@ -338,7 +338,7 @@ class MipMapLevel:
         dict
             json compatible dictionary representaton
         """
-        return dict(self.__iter__())
+        return dict(self)
 
     def _formatUrls(self):
         d = {}
