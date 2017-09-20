@@ -331,15 +331,6 @@ class MipMapLevel:
         self.imageUrl = imageUrl
         self.maskUrl = maskUrl
 
-    def to_dict(self):
-        """
-        Returns
-        -------
-        dict
-            json compatible dictionary representaton
-        """
-        return dict(self)
-
     def _formatUrls(self):
         d = {}
         if self.imageUrl is not None:
