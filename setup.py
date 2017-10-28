@@ -29,11 +29,7 @@ with open('requirements.txt', 'r') as f:
     required = f.read().splitlines()
 
 setup(name='render-python',
-<<<<<<< HEAD
       version='1.3.0',
-=======
-      version='1.1.0',
->>>>>>> bumping version number
       description=' a python API to interact via python with render '
                   'databases see https://github.com/saalfeldlab/render',
       author='Forrest Collman, Russel Torres, Eric Perlman, Sharmi Seshamani',
