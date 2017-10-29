@@ -27,7 +27,7 @@ class MipMapLevel:
         dict
             json compatible dictionary representaton
         """
-        return dict(self.__iter__())
+        return self._formatUrls()
 
     def _formatUrls(self):
         d = {}
@@ -37,9 +37,22 @@ class MipMapLevel:
             d.update({'maskUrl': self.maskUrl})
         return d
 
+    def __getitem__(self,key):
+        if key=='imageUrl':
+            return self.imageUrl
+        if key=='maskUrl':
+            return self.maskUrl
+        else:
+            raise RenderError('{} is not a valid attribute of a mipmapLevel'.format(key))
+
     def __iter__(self):
         return iter([(self.level, self._formatUrls())])
 
+    def __eq__(self,b):
+        try:
+            return all([self.imageUrl == b.imageUrl, self.maskUrl==b.maskUrl])
+        except AttributeError as e:
+            return all([self.imageUrl == b.get('imageUrl'), self.maskUrl==b.get('maskUrl')])
 
 class TransformedDict(MutableMapping):
     """A dictionary that applies an arbitrary key-altering
@@ -72,12 +85,6 @@ class ImagePyramid(TransformedDict):
     to mipmapped (continuously downsmapled by 2x) representations
     of an image at level 0
     Can be put into dictionary formatting using dict(ip) or OrderedDict(ip)
-
-    Attributes
-    ----------
-    mipMapLevels : :obj:`list` of :class:`MipMapLevel`
-        list of :class:`MipMapLevel` objects defining image pyramid
-
     '''
 
     def __keytransform__(self,key):
@@ -88,11 +95,6 @@ class ImagePyramid(TransformedDict):
         if level<0:
             raise RenderError("{} is not a valid mipmap level (less than 0)".format(key))
         return "{}".format(level)
-    
-    def read_image(self,level,apply_mask=False):
-        return None
-    def read_mask(self):
-        return None
     
     @property
     def levels(self):
