@@ -96,6 +96,10 @@ class ImagePyramid(TransformedDict):
             raise RenderError("{} is not a valid mipmap level (less than 0)".format(key))
         return "{}".format(level)
     
+    def __iter__(self):
+        return sorted(
+            iter(self.store), key=(lambda x: x[0] )
+            
     @property
     def levels(self):
         """list of MipMapLevels in this ImagePyramid"""
