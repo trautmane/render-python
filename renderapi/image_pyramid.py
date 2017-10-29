@@ -97,8 +97,7 @@ class ImagePyramid(TransformedDict):
         return "{}".format(level)
     
     def __iter__(self):
-        return sorted(
-            iter(self.store), key=(lambda x: x[0] )
+        return iter(sorted(self.store))
             
     @property
     def levels(self):
