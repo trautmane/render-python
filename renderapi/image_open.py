@@ -76,10 +76,10 @@ def read_image_url(url):
             array = np.asarray(Image.open(fp))
     if (scheme == 's3'):
         client = boto3.client('s3')
-
+        path=path[1:]
         if filetype == 'tif':
-            tfile = tempfile.mkstemp()
-            client.download_file(path, tfile)
+            fp,tfile = tempfile.mkstemp()
+            client.download_file(netloc, path, tfile)
             array = tifffile.imread(tfile)
             os.remove(tfile)
         else:
