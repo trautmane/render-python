@@ -1,5 +1,6 @@
 import renderapi
 import pytest
+import json
 
 d = {
     "name":"DAPI",
@@ -21,5 +22,4 @@ def test_channel():
                                         maxIntensity=255,
                                         minIntensity=0,
                                         ip=ip)
-    
-    assert(channel.to_dict()==d)
+    assert(json.loads(renderapi.utils.renderdumps(channel))==d)
