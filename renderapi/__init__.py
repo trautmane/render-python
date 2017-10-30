@@ -10,6 +10,7 @@ from . import transform
 from . import pointmatch
 from . import coordinate
 from . import resolvedtiles
+from . import image_open
 from .render import connect
 from .render import Render
 
